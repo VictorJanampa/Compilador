@@ -1,12 +1,11 @@
 import 'dart:core';
-import 'dart:io';
 
 String grammarText =
     "E -> T E'\nE' -> + T E'\nE' -> ''\nT -> F T'\nT' -> * F T'\nT' -> ''\nF -> ( E )\nF -> id";
 
 class Production {
   var key;
-  List<List<String>> value;
+  List<List<String>> value=[];
 }
 
 class Grammar {
