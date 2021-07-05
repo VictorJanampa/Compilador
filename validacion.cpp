@@ -119,7 +119,7 @@ while(!st.empty() && !imput.empty()){
                 }
        
             else {
-                //cout<<"No se encontro ese simbolo, String invalido"<<endl;
+                //cout<<"vacio"<<endl;
                 break;
             }
         }
