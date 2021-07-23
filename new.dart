@@ -1,5 +1,5 @@
 import 'dart:core';
-import 'dart:io';
+import 'dart:convert';
 
 String grammarText =
     "E -> T E'\nE' -> + T E'\nE' -> ''\nT -> F T'\nT' -> * F T'\nT' -> ''\nF -> ( E )\nF -> id";
@@ -11,8 +11,12 @@ class Production {
 
 class Grammar {
   Map<String, List<List<String>>> _productions = new Map();
-  Map<String, List<String>> first = Map();
-  Map<String, List<String>> next = Map();
+  List<List<String>> get_first =[];
+  List<String> first=[];
+  List<List<String>> get_next =[];
+  List<String> next=[];
+  //Map<String, List<String>> first = Map();
+  //Map<String, List<String>> next = Map();
 
   Map<String, List<List<String>>> getProductions() {
     return _productions;
@@ -30,6 +34,7 @@ class Grammar {
     String symbol = '';
     String key = '';
     List<String> value = [];
+
     for (var i = 0; i < S.length; i++) {
       if (S[i] == ' ') {
         if (isFirstNT) {
@@ -66,84 +71,47 @@ class Grammar {
     });
   }
 
-  void addfirst(String s, String pos) {
-    List<String> f = [];
-    f.add(s);
-    first.update(pos, (value) => value + f, ifAbsent: () => f);
-  }
-
-  void addlast(String s, String pos) {
-    List<String> f = [];
-    f.add(s);
-    next.update(pos, (value) => value + f, ifAbsent: () => f);
-  }
-
-  void regla2(String B, String b) {
-    next.update(B, (value) => first[b], ifAbsent: () => first[b]);
-  }
-
-  void regla3(String B, String A) {
-    next.update(B, (value) => next[A], ifAbsent: () => next[A]);
-  }
-
-  void getFirsts_(String S, String pos) {
-    print(_productions[S]);
-    if (!_productions.containsKey(S)) {
-      if (first[pos]?.contains(S) == null) {
-        addfirst(S, pos);
+  void get_First_(String x){
+    List temp =_productions[x]! as List;
+    print(temp);
+    for(var pos in temp)
+    {
+      print(pos);
+    if (_productions.containsKey(pos[0])==true){
+      get_First_(pos[0]);
       }
-    } else {
-      for (var i in _productions[S] ?? []) {
-        getFirsts_(i[0], pos);
+    else{
+      get_first[get_first.length-1].add(pos[0]);
       }
     }
-    //primera regla
+    //if (_productions.containsKey(temp[0])==true){
+    //  get_First_(temp[0]);
+    //}
+    //else{
+    //  get_first[get_first.length-1].add(temp[0]);
+    //}
   }
 
   void getFirsts() {
     for (var x in _productions.keys) {
-      print('Firsts of $x :');
-      getFirsts_(x, x);
-    }
-  }
-
-  void getnext_(String S, String pos) {
-    print(_productions[S]);
-    if (!_productions.containsKey(S)) {
-    } else {
-      //segunda regla
-      if (_productions[S]?.length == 3) {
-        regla2(_productions[S][2], _productions[S][1]);
-      }
-      if (_productions[S]?.length == 2) {
-        regla2(_productions[S][1], S);
-      }
-    }
-    //primera regla
-  }
-
-  void getnext() {
-    bool primera_regla = true;
-    for (var x in _productions.keys) {
-      if (primera_regla == true) {
-        addlast('&', x);
-        primera_regla = false;
-      }
-      print('Firsts of $x :');
-      getFirsts_(x, x);
+      //print('Firsts of $x :');
+      //print(_productions[x]);
+      first.add(x);
+      get_first.add([]);
+      get_First_(x);
+      
     }
   }
 }
-
 main() {
   Grammar grammar = Grammar();
   grammar.fromText(grammarText);
   //print(grammar._productions);
-  print(grammar._productions);
+  //print(grammar._productions);
   grammar.getFirsts();
   print(grammar.first);
+  print(grammar.get_first);
   //grammar.printMap();
   //grammar.primeros_();
   //print(grammar.first);
-  print("{E:[(,id],E':[+,''],T:[(,id],T':[*,''],F:[(,id]}");
 }
