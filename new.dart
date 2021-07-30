@@ -139,6 +139,60 @@ class Grammar {
     get_next[kb] = get_next[ka];
   }
 
+  bool regla3(List temp, String x) {
+    int p = -1;
+    for (var i = 0; i < temp.length; i++) {
+      if (temp[i] == x) {
+        p = i;
+      }
+    }
+    if (p != -1) {
+      if (p == temp.length - 1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  void regla3_aplicar1(String keyA, String keyB) {
+    int ka = 0;
+    int kb = 0;
+    for (var i = 0; i < next.length; i++) {
+      if (next[i] == keyA) {
+        ka = i;
+      }
+      if (next[i] == keyB) {
+        kb = i;
+      }
+    }
+    get_next[ka] = get_next[kb];
+  }
+
+  void regla3_aplicar2(String keyA, String keyB, String keyb) {
+    int ka = 0;
+    int kB = 0;
+    int kb = 0;
+    for (var i = 0; i < next.length; i++) {
+      if (next[i] == keyA) {
+        ka = i;
+      }
+      if (next[i] == keyB) {
+        kB = i;
+      }
+      if (next[i] == keyb) {
+        kb = i;
+      }
+    }
+    get_next[kB] = get_first[kb];
+    for (var i = 0; i < get_next[ka].length; i++) {
+      if (get_next[kB].contains(get_next[ka][i]) == false) {
+        get_next[kB].add(get_next[ka][i]);
+      }
+    }
+  }
+
   void get_next_(String x) {
     List temp = _productions[x]! as List;
     print(temp);
